@@ -1,0 +1,15 @@
+CREATE TABLE tb_zhihu_question(
+zhihu_id bigint primary key auto_increment not null,
+topic varchar(255) not null,
+url varchar(300) not null,
+title varchar(200) not null,
+content longtext not null,
+create_time datetime,
+update_time datetime,
+answer_num int(11) not null,
+comments_num int(11) not null,
+watch_user_num int(11) not null,
+click_num int(11) not null,
+crawl_time datetime not null,
+crawl_update_time datetime not null)
+default charset utf8;

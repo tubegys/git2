@@ -1,0 +1,3 @@
+1. python处理excel文件主要是第三方模块库xlrd、xlwt、xluntils和pyExcelerator
+   除此之外，python处理excel还可以用win32com和openpyxl模块。
+2. 

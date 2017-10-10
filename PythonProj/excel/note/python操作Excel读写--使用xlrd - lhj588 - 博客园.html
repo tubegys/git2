@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>python操作Excel读写--使用xlrd - lhj588 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/bundle-darkgreentrip.css">
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/bundle-darkgreentrip-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/lhj588/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/lhj588/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/lhj588/wlwmanifest.xml">
+<script type="text/javascript" src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/encoder.js"></script><script src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'lhj588', cb_enable_mathjax=true;var isLogined=false;</script>
+<script src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/blog-common.js" type="text/javascript"></script>
+<script type="text/x-mathjax-config;executed=true">MathJax.Hub.Config({
+  tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] },
+  TeX: { equationNumbers: { autoNumber: ['AMS'], useLabelIds: true } },
+  'HTML-CSS': { linebreaks: { automatic: true } },
+  SVG: { linebreaks: { automatic: true } }});</script><script type="text/javascript" src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/MathJax.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head>
+<body><div id="MathJax_Message" style="display: none;"></div>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/lhj588/"><img id="blogLogo" src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/lhj588/">lhj588</a></h1>
+<h2></h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/lhj588/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/lhj588">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/lhj588/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/lhj588/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 159&nbsp; </span>
+<span id="stats_article_count">文章 - 9&nbsp; </span>
+<span id="stats-comment_count">评论 - 91</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/python操作Excel读写--使用xlrd - lhj588 - 博客园.html">python操作Excel读写--使用xlrd</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p>一、安装xlrd模块</p>
+<p>&nbsp;&nbsp; <span style="font-family: Trebuchet MS; color: #444444;">到python官网下载<span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><a href="http://pypi.python.org/pypi/xlrd">http://pypi.python.org/pypi/xlrd</a>模块安装，前提是已经安装了python 环境。</span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">二、使用介绍</span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp; 1、导入模块 </span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">import xlrd</span></span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp; 2、打开Excel文件读取数据</span></span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">data = xlrd.open_workbook('excelFile.xls')</span></span></span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp; 3、使用技巧</span></span></span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #0000ff; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>获取一个工作表</strong></span></span></span></span></p>
+<p>&nbsp;</p>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; table = data.sheets()[0]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #<span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">通过索引顺序<span class="Apple-converted-space">获取</span></span></span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="margin: 0px; color: #0000ff; padding: 0px;">table = data.sheet_by_index(0) #<span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">通过索引顺序<span class="Apple-converted-space">获取</span></span></span></div>
+<p>&nbsp;</p>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; table = data.sheet_by_name(u'Sheet1')#<span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">通过名称获取</span></span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong> <span style="text-align: justify; line-height: 18px; widows: 2; text-transform: none; background-color: #ffffff; font-variant: normal; font-style: normal; text-indent: 0px; display: inline !important; font-family: &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; font-size: 13px; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">获取整行和整列的值（数组）</span></strong></span></span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;　　
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; table.row_values(i)</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; table.col_values(i)</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong> <span style="text-align: justify; line-height: 18px; widows: 2; text-transform: none; background-color: #ffffff; font-variant: normal; font-style: normal; text-indent: 0px; display: inline !important; font-family: &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; font-size: 13px; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">获取行数和列数</span></strong></span></span></span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">　　</span></span></span></span></span>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nrows = table.nrows</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ncols = table.ncols</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>循环行列表数据</strong></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for i in range(nrows ):</span></div>
+<div style="text-align: justify; padding-bottom: 0px; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; padding-left: 30px; padding-right: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; padding-top: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print table.row_values(i)</span></div>
+<div style="text-align: justify; padding-bottom: 0px; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; padding-left: 30px; padding-right: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; padding-top: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;</div>
+<div style="text-align: justify; padding-bottom: 0px; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; padding-left: 30px; padding-right: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; padding-top: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><strong>单元格</strong></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">cell_A1 = table.cell(0,0).value</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">cell_C4 = table.cell(2,3).value</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><strong>使用行列索引</strong></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">cell_A1 = table.row(0)[0].value</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">cell_A2 = table.col(1)[0].value</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><strong>简单的写入</strong></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">row = 0</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">col = 0</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;"># 类型 0 empty,1 string, 2 number, 3 date, 4 boolean, 5 error</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">ctype = 1</span><span class="Apple-converted-space">&nbsp;</span><span style="margin: 0px; color: #0000ff; padding: 0px;">value = '单元格的值'</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">xf = 0</span><span class="Apple-converted-space">&nbsp;</span># 扩展的格式化</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">table.put_cell(row, col, ctype, value, xf)</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">table.cell(0,0)&nbsp; #单元格的值'</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;"><span style="margin: 0px; color: #0000ff; padding: 0px;">table.cell(0,0).value #单元格的值'</span></div>
+<div style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</div>
+</div>
+</div>
+</div>
+</div>
+<p style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; margin: 0px; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; padding: 0px;">&nbsp;</p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">三、Demo代码</span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp; Demo代码其实很简单，就是读取Excel数据。</span></span></p>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;">&nbsp;&nbsp;&nbsp;</span></span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">#</span><span style="color: #008000;"> -*- coding: utf-8 -*- </span><span style="color: #008000;"><br></span><span style="color: #008080;"> 2</span> <span style="color: #0000ff;">import</span>  xdrlib ,sys<br><span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span> xlrd<br><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">def</span> open_excel(file= <span style="color: #800000;">'</span><span style="color: #800000;">file.xls</span><span style="color: #800000;">'</span>):<br><span style="color: #008080;"> 5</span>     <span style="color: #0000ff;">try</span>:<br><span style="color: #008080;"> 6</span>         data = xlrd.open_workbook(file)<br><span style="color: #008080;"> 7</span>         <span style="color: #0000ff;">return</span> data<br><span style="color: #008080;"> 8</span>     <span style="color: #0000ff;">except</span> Exception,e:<br><span style="color: #008080;"> 9</span>         <span style="color: #0000ff;">print</span> str(e)<br><span style="color: #008080;">10</span> <span style="color: #008000;">#</span><span style="color: #008000;">根据索引获取Excel表格中的数据   参数:file：Excel文件路径     colnameindex：表头列名所在行的所以  ，by_index：表的索引</span><span style="color: #008000;"><br></span><span style="color: #008080;">11</span> <span style="color: #0000ff;">def</span> excel_table_byindex(file= <span style="color: #800000;">'</span><span style="color: #800000;">file.xls</span><span style="color: #800000;">'</span>,colnameindex=0,by_index=0):<br><span style="color: #008080;">12</span>     data = open_excel(file)<br><span style="color: #008080;">13</span>     table = data.sheets()[by_index]<br><span style="color: #008080;">14</span>     nrows = table.nrows <span style="color: #008000;">#</span><span style="color: #008000;">行数</span><span style="color: #008000;"><br></span><span style="color: #008080;">15</span>     ncols = table.ncols <span style="color: #008000;">#</span><span style="color: #008000;">列数</span><span style="color: #008000;"><br></span><span style="color: #008080;">16</span>     colnames =  table.row_values(colnameindex) <span style="color: #008000;">#</span><span style="color: #008000;">某一行数据 </span><span style="color: #008000;"><br></span><span style="color: #008080;">17</span>     list =[]<br><span style="color: #008080;">18</span>     <span style="color: #0000ff;">for</span> rownum <span style="color: #0000ff;">in</span> range(1,nrows):<br><span style="color: #008080;">19</span> <br><span style="color: #008080;">20</span>          row = table.row_values(rownum)<br><span style="color: #008080;">21</span>          <span style="color: #0000ff;">if</span> row:<br><span style="color: #008080;">22</span>              app = {}<br><span style="color: #008080;">23</span>              <span style="color: #0000ff;">for</span> i <span style="color: #0000ff;">in</span> range(len(colnames)):<br><span style="color: #008080;">24</span>                 app[colnames[i]] = row[i] <br><span style="color: #008080;">25</span>              list.append(app)<br><span style="color: #008080;">26</span>     <span style="color: #0000ff;">return</span> list<br><span style="color: #008080;">27</span> <br><span style="color: #008080;">28</span> <span style="color: #008000;">#</span><span style="color: #008000;">根据名称获取Excel表格中的数据   参数:file：Excel文件路径     colnameindex：表头列名所在行的所以  ，by_name：Sheet1名称</span><span style="color: #008000;"><br></span><span style="color: #008080;">29</span> <span style="color: #0000ff;">def</span> excel_table_byname(file= <span style="color: #800000;">'</span><span style="color: #800000;">file.xls</span><span style="color: #800000;">'</span>,colnameindex=0,by_name=u<span style="color: #800000;">'</span><span style="color: #800000;">Sheet1</span><span style="color: #800000;">'</span>):<br><span style="color: #008080;">30</span>     data = open_excel(file)<br><span style="color: #008080;">31</span>     table = data.sheet_by_name(by_name)<br><span style="color: #008080;">32</span>     nrows = table.nrows <span style="color: #008000;">#</span><span style="color: #008000;">行数 </span><span style="color: #008000;"><br></span><span style="color: #008080;">33</span>     colnames =  table.row_values(colnameindex) <span style="color: #008000;">#</span><span style="color: #008000;">某一行数据 </span><span style="color: #008000;"><br></span><span style="color: #008080;">34</span>     list =[]<br><span style="color: #008080;">35</span>     <span style="color: #0000ff;">for</span> rownum <span style="color: #0000ff;">in</span> range(1,nrows):<br><span style="color: #008080;">36</span>          row = table.row_values(rownum)<br><span style="color: #008080;">37</span>          <span style="color: #0000ff;">if</span> row:<br><span style="color: #008080;">38</span>              app = {}<br><span style="color: #008080;">39</span>              <span style="color: #0000ff;">for</span> i <span style="color: #0000ff;">in</span> range(len(colnames)):<br><span style="color: #008080;">40</span>                 app[colnames[i]] = row[i]<br><span style="color: #008080;">41</span>              list.append(app)<br><span style="color: #008080;">42</span>     <span style="color: #0000ff;">return</span> list<br><span style="color: #008080;">43</span> <br><span style="color: #008080;">44</span> <span style="color: #0000ff;">def</span> main():<br><span style="color: #008080;">45</span>    tables = excel_table_byindex()<br><span style="color: #008080;">46</span>    <span style="color: #0000ff;">for</span> row <span style="color: #0000ff;">in</span> tables:<br><span style="color: #008080;">47</span>        <span style="color: #0000ff;">print</span> row<br><span style="color: #008080;">48</span> <br><span style="color: #008080;">49</span>    tables = excel_table_byname()<br><span style="color: #008080;">50</span>    <span style="color: #0000ff;">for</span> row <span style="color: #0000ff;">in</span> tables:<br><span style="color: #008080;">51</span>        <span style="color: #0000ff;">print</span> row<br><span style="color: #008080;">52</span> <br><span style="color: #008080;">53</span> <span style="color: #0000ff;">if</span> <span style="color: #800080;">__name__</span>==<span style="color: #800000;">"</span><span style="color: #800000;">__main__</span><span style="color: #800000;">"</span>:<br><span style="color: #008080;">54</span>     main()</pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-family: Trebuchet MS; color: #444444;"><span style="text-align: justify; widows: 2; text-transform: none; background-color: #ffffff; text-indent: 0px; display: inline !important; font: 13px/18px &#39;Trebuchet MS&#39;, Tahoma, Arial, sans-serif; white-space: normal; orphans: 2; float: none; letter-spacing: normal; color: #444444; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px;"><br><a href="http://weibo.com/315188">代码下载地址</a>&nbsp; &nbsp; &nbsp; &nbsp;关注新浪微博：<a href="http://weibo.com/315188">@云麦罗慧军</a></span></span></p>
+<p>&nbsp;</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(2314181,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;93934771-a04e-df11-ba8f-001cf0cd104b&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/lhj588/" target="_blank"><img src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/u128587.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/lhj588/">lhj588</a><br>
+            <a href="http://home.cnblogs.com/u/lhj588/followees">关注 - 7</a><br>
+            <a href="http://home.cnblogs.com/u/lhj588/followers">粉丝 - 129</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;93934771-a04e-df11-ba8f-001cf0cd104b&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(2314181,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">14</span>
+    </div>
+    <div class="buryit" onclick="votePost(2314181,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/lhj588/archive/2011/12/22/2297454.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/lhj588/archive/2011/12/22/2297454.html" title="发布于2011-12-22 10:49">【转帖】使用python爬虫抓站的一些技巧总结：进阶篇</a><br><a href="http://www.cnblogs.com/lhj588/archive/2012/01/13/2321769.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/lhj588/archive/2012/01/13/2321769.html" title="发布于2012-01-13 16:19">介绍 Spring 3.1 M1 中的缓存功能</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2012-01-06 11:35</span> <a href="http://www.cnblogs.com/lhj588/">lhj588</a> 阅读(<span id="post_view_count">272368</span>) 评论(<span id="post_comment_count">10</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=2314181" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#" onclick="AddToWz(2314181);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=90036,cb_entryId=2314181,cb_blogApp=currentBlogApp,cb_blogUserGuid='93934771-a04e-df11-ba8f-001cf0cd104b',cb_entryCreatedDate='2012/1/6 11:35:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"><div id="comments_pager_top"></div>
+<br>
+<div class="feedback_area_title">评论列表</div>
+<div class="feedbackNoItems"></div>	
+
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#2591633" class="layer">#1楼</a><a name="2591633" id="comment_anchor_2591633"></a>  <span class="comment_date">2013-01-04 07:04</span> <a id="a_comment_author_2591633" href="http://www.cnblogs.com/GarfieldTom/" target="_blank">garfieldtom</a> <a href="http://msg.cnblogs.com/send/garfieldtom" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2591633" class="blog_comment_body">学习</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2591633,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2591633,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2591633_avatar" style="display:none;">http://pic.cnblogs.com/face/u53408.jpg</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#2668985" class="layer">#2楼</a><a name="2668985" id="comment_anchor_2668985"></a>  <span class="comment_date">2013-04-28 17:57</span> <a id="a_comment_author_2668985" href="http://www.cnblogs.com/hanxi/" target="_blank">涵曦</a> <a href="http://msg.cnblogs.com/send/%E6%B6%B5%E6%9B%A6" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2668985" class="blog_comment_body">好东西，正用的着</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2668985,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2668985,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2668985_avatar" style="display:none;">http://pic.cnblogs.com/face/u198486.jpg</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#2826663" class="layer">#3楼</a><a name="2826663" id="comment_anchor_2826663"></a>  <span class="comment_date">2013-11-29 10:12</span> <a id="a_comment_author_2826663" href="http://www.cnblogs.com/wayswang/" target="_blank">wayswang</a> <a href="http://msg.cnblogs.com/send/wayswang" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2826663" class="blog_comment_body">好</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2826663,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2826663,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_2826663_avatar" style="display:none;">http://pic.cnblogs.com/face/32952/20131129101740.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#2887770" class="layer">#4楼</a><a name="2887770" id="comment_anchor_2887770"></a>  <span class="comment_date">2014-03-04 10:20</span> <a id="a_comment_author_2887770" href="http://home.cnblogs.com/u/253944/" target="_blank">残豆</a> <a href="http://msg.cnblogs.com/send/%E6%AE%8B%E8%B1%86" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_2887770" class="blog_comment_body">谢谢，试一试。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(2887770,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(2887770,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3034518" class="layer">#5楼</a><a name="3034518" id="comment_anchor_3034518"></a>  <span class="comment_date">2014-09-25 15:23</span> <a id="a_comment_author_3034518" href="http://home.cnblogs.com/u/419702/" target="_blank">包菜兄</a> <a href="http://msg.cnblogs.com/send/%E5%8C%85%E8%8F%9C%E5%85%84" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3034518" class="blog_comment_body">嗨，如果要实现跨行跨列应该如何实现的呢？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3034518,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3034518,&#39;Bury&#39;,this)">反对(0)</a></div>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3371890" class="layer">#6楼</a><a name="3371890" id="comment_anchor_3371890"></a>  <span class="comment_date">2016-03-04 13:48</span> <a id="a_comment_author_3371890" href="http://www.cnblogs.com/pentesterlab-beginner/" target="_blank">愁落暗尘</a> <a href="http://msg.cnblogs.com/send/%E6%84%81%E8%90%BD%E6%9A%97%E5%B0%98" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3371890" class="blog_comment_body">好实例。</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3371890,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3371890,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3371890_avatar" style="display:none;">http://pic.cnblogs.com/face/619231/20140331234446.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3408999" class="layer">#7楼</a><a name="3408999" id="comment_anchor_3408999"></a>  <span class="comment_date">2016-04-15 11:08</span> <a id="a_comment_author_3408999" href="http://www.cnblogs.com/WeiLi-X/" target="_blank">WeiLiX</a> <a href="http://msg.cnblogs.com/send/WeiLiX" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3408999" class="blog_comment_body">学习👍</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3408999,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3408999,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3408999_avatar" style="display:none;">http://pic.cnblogs.com/face/585109/20131122234623.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3502792" class="layer">#8楼</a><a name="3502792" id="comment_anchor_3502792"></a>  <span class="comment_date">2016-09-04 10:20</span> <a id="a_comment_author_3502792" href="http://www.cnblogs.com/kingsleydev/" target="_blank">Jinkingsley</a> <a href="http://msg.cnblogs.com/send/Jinkingsley" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3502792" class="blog_comment_body">mark</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3502792,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3502792,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3502792_avatar" style="display:none;">http://pic.cnblogs.com/face/632726/20140511210241.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3606960" class="layer">#9楼</a><a name="3606960" id="comment_anchor_3606960"></a>  <span class="comment_date">2017-01-19 15:29</span> <a id="a_comment_author_3606960" href="http://www.cnblogs.com/mosson/" target="_blank">老板请忘掉哪个bug</a> <a href="http://msg.cnblogs.com/send/%E8%80%81%E6%9D%BF%E8%AF%B7%E5%BF%98%E6%8E%89%E5%93%AA%E4%B8%AAbug" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3606960" class="blog_comment_body">读取数据遇到空行怎么办？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3606960,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3606960,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3606960_avatar" style="display:none;">http://pic.cnblogs.com/face/967202/20160817095455.png</span>
+			</div>
+		</div>
+	
+		<div class="feedbackItem">
+			<div class="feedbackListSubtitle">
+				<div class="feedbackManage">
+					&nbsp;&nbsp;<span class="comment_actions"></span>
+				</div>
+				<a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3607006" class="layer">#10楼</a><a name="3607006" id="comment_anchor_3607006"></a><span id="comment-maxId" style="display:none;">3607006</span><span id="comment-maxDate" style="display:none;">2017/1/19 16:04:17</span>  <span class="comment_date">2017-01-19 16:04</span> <a id="a_comment_author_3607006" href="http://www.cnblogs.com/mosson/" target="_blank">老板请忘掉哪个bug</a> <a href="http://msg.cnblogs.com/send/%E8%80%81%E6%9D%BF%E8%AF%B7%E5%BF%98%E6%8E%89%E5%93%AA%E4%B8%AAbug" title="发送站内短消息" class="sendMsg2This">&nbsp;</a>
+			</div>
+			<div class="feedbackCon">
+				<div id="comment_body_3607006" class="blog_comment_body"><a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3034518" title="查看所回复的评论" onclick="commentManager.renderComments(0,50,3034518);">@</a>
+包菜兄 遇到空行怎么处理？</div><div class="comment_vote"><a href="javascript:void(0);" class="comment_digg" onclick="return voteComment(3607006,&#39;Digg&#39;,this)">支持(0)</a><a href="javascript:void(0);" class="comment_bury" onclick="return voteComment(3607006,&#39;Bury&#39;,this)">反对(0)</a></div><span id="comment_3607006_avatar" style="display:none;">http://pic.cnblogs.com/face/967202/20160817095455.png</span>
+			</div>
+		</div>
+	<div id="comments_pager_bottom"></div></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="http://rongcloud.cn/reports/journal2" target="_blank">【推荐】融云发布 App 社交化白皮书 IM 提升活跃超 8 倍</a><br><a href="http://bbs.h3bpm.com/index.php?m=app&app=product_download&a=reg&utm_source=csdn&utm_medium=pic&utm_campaign=show&utm_content=v10&utm_term=%E5%85%8D%E8%B4%B9%E4%B8%8B%E8%BD%BD" target="_blank">【推荐】自开发 零实施的BPM</a><br></div>
+<div id="opt_under_post"></div>
+<div id="ad_c1" class="c_ad_block"><a href="http://click.aliyun.com/m/9742/" target="_blank"><img width="300" height="250" src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/24442-20170123215154878-323669841.gif" alt=""></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/561965/" target="_blank">微软轻量级云端产品在Windows 10 build 15019初露端倪</a><br> ·  <a href="http://news.cnblogs.com/n/561964/" target="_blank">为恢复正常运转 奥地利一豪华酒店向攻击者支付勒索金</a><br> ·  <a href="http://news.cnblogs.com/n/561963/" target="_blank">Surface 3正式在微软美国官方商城下线</a><br> ·  <a href="http://news.cnblogs.com/n/561962/" target="_blank">Cloudsight：一款面向高校推出的免费计算机视觉API</a><br> ·  <a href="http://news.cnblogs.com/n/561961/" target="_blank">LG获得可折叠智能手机专利</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="ad_c2" class="c_ad_block"><a href="http://bbs.h3bpm.com/index.php?m=app&app=product_download&a=reg&utm_source=csdn&utm_medium=pic&utm_campaign=show&utm_content=v10&utm_term=%E5%85%8D%E8%B4%B9%E4%B8%8B%E8%BD%BD" target="_blank"><img width="468" height="60" src="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/24442-20170118152220281-363324784.jpg" alt=""></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/554260/" target="_blank">「代码家」的学习过程和学习经验分享</a><br> ·  <a href="http://kb.cnblogs.com/page/556770/" target="_blank">写给未来的程序媛</a><br> ·  <a href="http://kb.cnblogs.com/page/558087/" target="_blank">高质量的工程代码为什么难写</a><br> ·  <a href="http://kb.cnblogs.com/page/555750/" target="_blank">循序渐进地代码重构</a><br> ·  <a href="http://kb.cnblogs.com/page/554496/" target="_blank">技术的正宗与野路子</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/lhj588/">lhj588</a><br>园龄：<a href="http://home.cnblogs.com/u/lhj588/" title="入园时间：2010-04-23">6年9个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/lhj588/followers/">129</a><br>关注：<a href="http://home.cnblogs.com/u/lhj588/followees/">7</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;93934771-a04e-df11-ba8f-001cf0cd104b&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="日历">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2011/12/01&#39;);return false;">&lt;</a></td><td align="center">2012年1月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2012/02/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">25</td><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td></tr><tr><td class="CalWeekendDay" align="center">1</td><td align="center">2</td><td align="center">3</td><td align="center">4</td><td align="center">5</td><td align="center"><a href="http://www.cnblogs.com/lhj588/archive/2012/01/06.html"><u>6</u></a></td><td class="CalWeekendDay" align="center">7</td></tr><tr><td class="CalWeekendDay" align="center">8</td><td align="center">9</td><td align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center"><a href="http://www.cnblogs.com/lhj588/archive/2012/01/13.html"><u>13</u></a></td><td class="CalWeekendDay" align="center">14</td></tr><tr><td class="CalWeekendDay" align="center">15</td><td align="center">16</td><td align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td class="CalWeekendDay" align="center">21</td></tr><tr><td class="CalWeekendDay" align="center">22</td><td align="center">23</td><td align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td class="CalWeekendDay" align="center">28</td></tr><tr><td class="CalWeekendDay" align="center">29</td><td align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<div class="catListLink">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/lhj588/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/lhj588/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/lhj588/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/lhj588/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/lhj588/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div></div><div id="sidebar_recentposts" class="sidebar-block">
+<div class="catListEssay">
+<h3 class="catListTitle">最新随笔</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/lhj588/p/6069890.html">1. 如何制作CSR文件?</a></li><li><a href="http://www.cnblogs.com/lhj588/p/6069873.html">2. https  SSL主流数字证书都有哪些格式？</a></li><li><a href="http://www.cnblogs.com/lhj588/p/5876302.html">3. 怎么使用阿里云直播服务应用到现在主流直播平台中</a></li><li><a href="http://www.cnblogs.com/lhj588/p/5693401.html">4. liunx 服务内存消耗100% 怎么处理</a></li><li><a href="http://www.cnblogs.com/lhj588/articles/5489056.html">5. 阿里云服务器 22端口无法访问</a></li><li><a href="http://www.cnblogs.com/lhj588/p/4802916.html">6. discuz 使用阿里云OSS</a></li><li><a href="http://www.cnblogs.com/lhj588/p/4614740.html">7. MySQL 编写递归查询函数</a></li><li><a href="http://www.cnblogs.com/lhj588/p/4344366.html">8. Nginx负载均衡 后端服务器怎么共享Session 问题</a></li><li><a href="http://www.cnblogs.com/lhj588/p/4344354.html">9. nginx做反向代理负载均衡 Java怎么获取后端服务器获取用户IP</a></li><li><a href="http://www.cnblogs.com/lhj588/p/4334162.html">10. liunx CentOS 升级Python版本</a></li>
+</ul>
+</div>
+</div><div id="sidebar_toptags" class="sidebar-block">
+<div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/lhj588/tag/php/">php</a>(2)</li><li><a href="http://www.cnblogs.com/lhj588/tag/Python%20GUI/">Python GUI</a>(2)</li><li><a href="http://www.cnblogs.com/lhj588/tag/SQL%E4%BC%98%E5%8C%96/">SQL优化</a>(1)</li><li><a href="http://www.cnblogs.com/lhj588/tag/pyQt4/">pyQt4</a>(1)</li><li><a href="http://www.cnblogs.com/lhj588/tag/Jquery/">Jquery</a>(1)</li><li><a href="http://www.cnblogs.com/lhj588/tag/Lucene/">Lucene</a>(1)</li>
+</ul>
+</div></div><div id="sidebar_categories">
+<div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+<h3 class="catListTitle">随笔分类<span style="font-size:11px;font-weight:normal">(57)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/lhj588/category/382937.html">Django(11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/lhj588/category/490412.html">IOS(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/lhj588/category/438656.html">Java(12)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/lhj588/category/382938.html">Linux(9)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/lhj588/category/438655.html">mybatis(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/lhj588/category/386142.html">MySql(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/lhj588/category/332315.html">NET Error</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/lhj588/category/383900.html">Python(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/lhj588/category/332314.html">python Error(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/lhj588/category/441363.html">Quartz(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="http://www.cnblogs.com/lhj588/category/383231.html">Ruby(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="http://www.cnblogs.com/lhj588/category/403337.html">SQL Server(1)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案<span style="font-size:11px;font-weight:normal">(159)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/lhj588/archive/2016/11.html">2016年11月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/lhj588/archive/2016/09.html">2016年9月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/lhj588/archive/2016/07.html">2016年7月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/lhj588/archive/2015/09.html">2015年9月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/lhj588/archive/2015/07.html">2015年7月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/lhj588/archive/2015/03.html">2015年3月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/lhj588/archive/2015/02.html">2015年2月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/lhj588/archive/2015/01.html">2015年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/lhj588/archive/2014/12.html">2014年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/lhj588/archive/2014/06.html">2014年6月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/lhj588/archive/2014/03.html">2014年3月 (8)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/lhj588/archive/2014/02.html">2014年2月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/lhj588/archive/2014/01.html">2014年1月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/lhj588/archive/2013/10.html">2013年10月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/lhj588/archive/2013/09.html">2013年9月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/lhj588/archive/2013/08.html">2013年8月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="http://www.cnblogs.com/lhj588/archive/2013/07.html">2013年7月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="http://www.cnblogs.com/lhj588/archive/2013/06.html">2013年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="http://www.cnblogs.com/lhj588/archive/2013/05.html">2013年5月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_19" href="http://www.cnblogs.com/lhj588/archive/2013/04.html">2013年4月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_20" href="http://www.cnblogs.com/lhj588/archive/2013/03.html">2013年3月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_21" href="http://www.cnblogs.com/lhj588/archive/2013/02.html">2013年2月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_22" href="http://www.cnblogs.com/lhj588/archive/2013/01.html">2013年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_23" href="http://www.cnblogs.com/lhj588/archive/2012/12.html">2012年12月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_24" href="http://www.cnblogs.com/lhj588/archive/2012/11.html">2012年11月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_25" href="http://www.cnblogs.com/lhj588/archive/2012/10.html">2012年10月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_26" href="http://www.cnblogs.com/lhj588/archive/2012/08.html">2012年8月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_27" href="http://www.cnblogs.com/lhj588/archive/2012/07.html">2012年7月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_28" href="http://www.cnblogs.com/lhj588/archive/2012/06.html">2012年6月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_29" href="http://www.cnblogs.com/lhj588/archive/2012/05.html">2012年5月 (22)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_30" href="http://www.cnblogs.com/lhj588/archive/2012/04.html">2012年4月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_31" href="http://www.cnblogs.com/lhj588/archive/2012/03.html">2012年3月 (14)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_32" href="http://www.cnblogs.com/lhj588/archive/2012/02.html">2012年2月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_33" href="http://www.cnblogs.com/lhj588/archive/2012/01.html">2012年1月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_34" href="http://www.cnblogs.com/lhj588/archive/2011/12.html">2011年12月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_35" href="http://www.cnblogs.com/lhj588/archive/2011/11.html">2011年11月 (10)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_36" href="http://www.cnblogs.com/lhj588/archive/2011/10.html">2011年10月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_37" href="http://www.cnblogs.com/lhj588/archive/2011/06.html">2011年6月 (5)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_articlecategory" class="catListArticleCategory sidebar-block">
+<h3 class="catListTitle">文章分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_2_Link_0" href="http://www.cnblogs.com/lhj588/category/331764.html">Django Web</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_articlearchive" class="catListArticleArchive sidebar-block">
+<h3 class="catListTitle">文章档案<span style="font-size:11px;font-weight:normal">(7)</span></h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_3_Link_0" href="http://www.cnblogs.com/lhj588/archives/2016/05.html" rel="nofollow">2016年5月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_1" href="http://www.cnblogs.com/lhj588/archives/2015/01.html" rel="nofollow">2015年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_2" href="http://www.cnblogs.com/lhj588/archives/2014/06.html" rel="nofollow">2014年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_3" href="http://www.cnblogs.com/lhj588/archives/2014/04.html" rel="nofollow">2014年4月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_4" href="http://www.cnblogs.com/lhj588/archives/2011/10.html" rel="nofollow">2011年10月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_5" href="http://www.cnblogs.com/lhj588/archives/2011/09.html" rel="nofollow">2011年9月 (1)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_scorerank" class="sidebar-block">
+<div class="catListBlogRank">
+<h3 class="catListTitle">积分与排名</h3>
+<ul>
+	<li class="liScore">
+		积分 -	192602
+	</li>
+	<li class="liRank">
+		排名 -	962
+	</li>
+</ul>
+</div>
+
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3607006">1. Re:python操作Excel读写--使用xlrd</a></li>
+        <li class="recent_comment_body">@包菜兄 遇到空行怎么处理？...</li>
+        <li class="recent_comment_author">--老板请忘掉哪个bug</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html#3606960">2. Re:python操作Excel读写--使用xlrd</a></li>
+        <li class="recent_comment_body">读取数据遇到空行怎么办？</li>
+        <li class="recent_comment_author">--老板请忘掉哪个bug</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/lhj588/archive/2013/02/06/2900937.html#3601045">3. Re:使用Lucene.Net实现全文检索</a></li>
+        <li class="recent_comment_body">mark</li>
+        <li class="recent_comment_author">--模拟人生</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/lhj588/archive/2012/04/13/2446267.html#3579376">4. Re:Python:通过执行100万次打印来比较C和python的性能，以及用C和python结合来解决性能问题的方法 .</a></li>
+        <li class="recent_comment_body">@双木成林引用我觉得用执行打印来做性能比较不是十分恰当. 因为2点。1. python的print有很多隐含操作，本身性能就十分低下，如果换成sys.stdout.write会提升不小的性能。2. 打......</li>
+        <li class="recent_comment_author">--qq849635649</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/lhj588/archive/2012/05/24/2516040.html#3574583">5. Re:Django model字段类型清单</a></li>
+        <li class="recent_comment_body">django 1.8.4<br>mysql 5.5<br>字符型字段中null=True 对应sqlDEFAULT NULL, blank=True则不生效</li>
+        <li class="recent_comment_author">--liown</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/python操作Excel读写--使用xlrd - lhj588 - 博客园.html">1. python操作Excel读写--使用xlrd(272367)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2012/04/23/2466653.html">2. python datetime处理时间(100940)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2012/02/15/2353139.html">3. CentOS 查看IP,端口 修改IP,打开端口生效(58314)</a></li><li><a href="http://www.cnblogs.com/lhj588/p/3315876.html">4. Mysql  列转行统计查询  、行转列统计查询(57600)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2012/05/15/2501007.html">5. linux如何查看系统信息(36771)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/lhj588/archive/2011/10/03/2198472.html">1. python+PyQT+Eric安装配置(13)</a></li><li><a href="http://www.cnblogs.com/lhj588/p/3315876.html">2. Mysql  列转行统计查询  、行转列统计查询(10)</a></li><li><a href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/python操作Excel读写--使用xlrd - lhj588 - 博客园.html">3. python操作Excel读写--使用xlrd(10)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2011/06/20/2085549.html">4. 图解 PHP运行环境配置和开发环境的配置(7)</a></li><li><a href="http://www.cnblogs.com/lhj588/p/5876302.html">5. 怎么使用阿里云直播服务应用到现在主流直播平台中(6)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="./python操作Excel读写--使用xlrd - lhj588 - 博客园_files/python操作Excel读写--使用xlrd - lhj588 - 博客园.html">1. python操作Excel读写--使用xlrd(14)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2012/04/23/2466653.html">2. python datetime处理时间(10)</a></li><li><a href="http://www.cnblogs.com/lhj588/p/3805285.html">3. CDN技术分享(7)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2013/02/06/2900937.html">4. 使用Lucene.Net实现全文检索(5)</a></li><li><a href="http://www.cnblogs.com/lhj588/archive/2011/10/03/2198472.html">5. python+PyQT+Eric安装配置(4)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2017 lhj588
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>
